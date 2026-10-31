@@ -1,0 +1,31 @@
+NOTICE
+======
+
+teardown-codex is a Codex-side port of the Claude Code teardown skill, plus a
+mechanical-ant example built with that port.
+
+This repository is NOT an official Codex product or release, and is not
+endorsed by OpenAI, Anthropic, elvarofficial, or whaleyxbt.
+
+Upstream and acknowledgements
+-----------------------------
+- Primary methodology and much of the implementation come from:
+  https://github.com/elvarofficial/teardown
+  (MIT License; Copyright 2026 elvarofficial and whaleyxbt)
+
+- Motion / film capture base:
+  https://github.com/whaleyxbt/claude-motion
+  (MIT License; Copyright 2026 whaleyxbt)
+
+- Author article introducing the original skill:
+  https://x.com/elvar_official/status/2116174609355571402
+
+What this repo adds
+-------------------
+- Skill packaging and path adjustments so the same SKILL.md workflow can run
+  under Codex.
+- A mechanical-ant interactive offline demo (examples/ant/), including a
+  single-file HTML build you can open in a browser.
+
+Official upstream examples (V8, Cessna, Strandbeest) are intentionally NOT
+vendored here. Build them from the upstream repo instead.
