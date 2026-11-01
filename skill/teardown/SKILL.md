@@ -9,7 +9,7 @@ One machine, one driveable page, optionally a film of the same machine. Resolve 
 
 ## Setup and Windows execution
 
-Requires Node 20+ and npm; Playwright Chromium for capture; ffmpeg and ffprobe on PATH for video/sheets; Python 3 for sound (standard library only). Read [references/workflow.md](references/workflow.md) when building a machine and [references/capture.md](references/capture.md) when capturing or scoring.
+Requires Node 20+ and npm; Playwright Chromium for capture; ffmpeg and ffprobe on PATH for video/sheets; Python 3 for sound (standard library only). Use `node "$SkillDir/scripts/doctor.mjs" --mode page` (`film`/`sound` for those deliverables) to check the actual environment before diagnosing missing dependencies. Read [references/workflow.md](references/workflow.md) when building a machine and [references/capture.md](references/capture.md) when capturing or scoring.
 
 In PowerShell prefer `codex.cmd`, `npm.cmd`, `npx.cmd` if execution policy blocks `.ps1` wrappers. Quote paths, invoke quoted executables with `&`, and prefer workspace-relative paths. Never use a Claude installation path.
 
@@ -34,8 +34,14 @@ Invoke with `$teardown`, `/skills`, or natural language. Recognize `/teardown` a
 
 ## Pipeline
 
+For dense mechanical builds and staged disassembly, read [references/assembly-detail.md](references/assembly-detail.md). Prototype a complete transmission, register meaningful parts, and separate assembled kinematics from local exploded-view offsets. Review part design, disassembly readability and motion as separate acceptance questions. Verify detail in macro views before multiplying it, then check the actual delivery camera after covers open.
+
+For biomimetic machines or animal-inspired forms, read [references/biomorphology.md](references/biomorphology.md). Establish taxon/stage, landmarks and orthographic silhouettes before mechanical detailing; validate exterior, structure and mechanism as distinct readable layers.
+
+For weaving, extrusion, cable laying or other processes that create material geometry, read [references/deposition.md](references/deposition.md). Keep the tool outlet, material path, feed motion and generated geometry in one seekable state.
+
 1. **Pick machine + reference.** Use a real photo, manual cutaway, measured drawing or motion clip. Record provenance, dimensions and assumptions in the project. Find an appropriate reference with available tools if none was supplied; do not label invented dimensions as measured. Define the mechanical question and useful subsystem controls.
-2. **Model first.** One input (crank angle, stroke, wind) produces all poses and readouts. Write math and units before geometry; separate it from Three.js where practical (Cessna combines them). Check endpoints, joint lengths, ratios and continuity numerically. Use exact solvers rather than keyframed mechanical motion. Correct collisions with parameters rather than hiding them with a camera.
+2. **Model first.** For articulated/custom mechanisms read [references/engineering.md](references/engineering.md): map every joint to a drive, distinguish servo command from joint angle, and declare the scope of collision checks. One input (crank angle, stroke, wind) produces all poses and readouts. Write math and units before geometry; separate it from Three.js where practical (Cessna combines them). Check endpoints, joint lengths, ratios and continuity numerically. Use exact solvers rather than keyframed mechanical motion. Correct collisions with parameters rather than hiding them with a camera.
 3. **Console.** Panels, charts and labels consume the same frame state as geometry. Give each useful subsystem a button; include speed/input, pause, views and appropriate isolate, glass, section or exploded controls. Each must visibly work. Reuse the examples' projected leaders and consoles rather than inventing decorative gauges.
 4. **Look.** Use procedural geometry, a pale studio, one accent marking the active part, shadows and restrained post. A multi-leg linkage needs a three-quarter view along its spine. Aim for 60-70% viewport occupancy, a 60 px safe margin, and principal labels around 34 px at 1080 output; verify legibility at phone width. Check white surfaces and metal for lost detail.
 5. **Critic stills.** Build the film entry, capture frame zero and every scripted beat, open every tile against [the review checklist](references/capture.md), zoom into suspect transitions, fix and recapture. Never declare visual completion without reading current images. If vision/browser tools are unavailable, explicitly leave visual QA unverified.
@@ -45,6 +51,8 @@ Invoke with `$teardown`, `/skills`, or natural language. Recognize `/teardown` a
 
 ## Examples and build commands
 
+Distribution note: this GitHub package omits the three upstream machine examples, as documented in the repository README. The table and bundled-name commands below describe a complete runtime with those source folders present. In this distribution use an explicit custom entry such as the repository mechanical ant. The scaffold command requires a complete runtime; fetch the upstream example sources separately before using it.
+
 Read the closest example deeply; consult others as needed:
 
 | Example | Driver and reusable features |
@@ -53,7 +61,7 @@ Read the closest example deeply; consult others as needed:
 | `sims/cessna-*` | Stroke 0..1, 32-tooth module-4-mm pinion, half-turn folding gear; takeoff/landing, x-ray, section and exploded modes. 201 mm is rounded from 201.062 mm. |
 | `sims/strandbeest-*` | Twenty legs from Jansen lengths and circle intersections, wind integrated into crank angle; instancing, foot traces and contact charts. Start here for a walking robot. |
 
-Each has `-shared` (model/geometry/stage/console/live/film/score), `-live/main.js` and `-film/main.js` with a seconds-only `timeline.json`. `sims/kit` supplies runtime, generic HUD/director, stage, utilities and warm-up. Machine controls, auto-tour, cutaways and quality tiers live in example code; importing the kit alone does not implement them.
+Each has `-shared` (model/geometry/stage/console/live/film/score), `-live/main.js` and `-film/main.js` with a shared event-based `timeline.json`. `sims/kit` supplies runtime, generic HUD/director, stage, utilities and warm-up. Machine controls, auto-tour, cutaways and quality tiers live in example code; importing the kit alone does not implement them.
 
 Run from the project workspace so outputs go to `./teardown-out`:
 
@@ -64,5 +72,7 @@ node "$SkillDir/sims/build.mjs" './my-machine-film'
 ```
 
 Custom entries are folders with `main.js`. Use `teardown-kit/runtime.js` and `teardown-kit/util.js` aliases; the builder resolves them and dependencies outside the skill folder. Keep sibling workspace `my-machine-shared`, `my-machine-film`, `my-machine-live` folders. See references for contracts and capture commands.
+
+To start from a complete example: `node "$SkillDir/scripts/scaffold.mjs" --from strandbeest --name my-machine --dir .`. This copies the original mechanism under new entry names; replace its model, references and labels before presenting it as a new machine. Run `node "$SkillDir/scripts/core-test.mjs"` and `node "$SkillDir/scripts/check.mjs"` when changing the runtime, plus builds and relevant browser QA.
 
 At handoff give source/HTML paths, controls, reference and assumption provenance, checks actually run, and unfinished verification. Keep the bundled MIT LICENSE and credit when redistributing runtime code.

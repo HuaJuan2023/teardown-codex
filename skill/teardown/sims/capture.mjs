@@ -22,6 +22,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {CHROMIUM, CHROMIUM_ARGS, DIST, FFMPEG, OUT, PYTHON, playwright} from '../paths.mjs';
+import {reviewTimes} from './kit/timeline.js';
 
 const {chromium} = playwright();
 
@@ -44,6 +45,7 @@ if (!fs.existsSync(html)) {
   process.exit(1);
 }
 const [W, H] = opt('size', '1080x1350').split('x').map(Number);
+if(![W,H].every(v=>Number.isInteger(v)&&v>0))throw new Error('--size requires positive integer WIDTHxHEIGHT');
 const config = opt('config') ? JSON.parse(fs.readFileSync(opt('config'), 'utf8')) : {};
 // --music <file> [--music-start auto|SECONDS]: analyse the track (sims/beats.py),
 // cut the window so the drop lands ~40% in, and give the beat map to the director.
@@ -74,9 +76,12 @@ const browser = await chromium.launch({
 });
 try {
 const dpr = Number(opt('dpr', 4 / 3));
+if(!Number.isFinite(dpr)||dpr<=0)throw new Error('--dpr must be positive');
 const page = await browser.newPage({viewport: {width: W, height: H}, deviceScaleFactor: dpr});
+const pageErrors=[];
 page.on('console', (m) => m.type() === 'error' && console.error('[page]', m.text()));
-page.on('pageerror', (e) => console.error('[page error]', e.message));
+page.on('pageerror', (e) => {pageErrors.push(e.message);console.error('[page error]', e.message);});
+const checkPage=()=>{if(pageErrors.length)throw new Error('capture aborted: '+pageErrors.join('\n'));};
 await page.addInitScript((cfg) => {
   window.__CAPTURE = true;
   window.__SIM_CONFIG = cfg;
@@ -88,6 +93,7 @@ await page.waitForFunction(
   {timeout: 60000},
 );
 await page.evaluate(() => document.fonts.ready);
+checkPage();
 const info = await page.evaluate((seek) => {
   const gl = document.createElement('canvas').getContext('webgl2');
   const ext = gl && gl.getExtension('WEBGL_debug_renderer_info');
@@ -99,7 +105,7 @@ const info = await page.evaluate((seek) => {
 }, SEEK);
 console.log(`gpu: ${info.gpu}`);
 // One entry point for both contracts: a sim's SIM.render(t) or a page's seek(t).
-const draw = (t) => page.evaluate(([x, seek]) => (seek ? window.seek(x) : window.SIM.render(x)), [t, SEEK]);
+const draw = async (t) => {checkPage();if(!Number.isFinite(t)||t<0)throw new Error('capture time must be finite and nonnegative');await page.evaluate(([x, seek]) => (seek ? window.seek(x) : window.SIM.render(x)), [t, SEEK]);checkPage();};
 const end = Number(opt('to', info.duration));
 if (!Number.isFinite(end) || end <= 0) {
   console.error('invalid duration: pass positive --to <seconds> or set window.DURATION');
@@ -111,15 +117,7 @@ const stillTimes = (arg) => {
   if (arg === 'beats') {
     const file = opt('timeline', path.join(HERE, name, 'timeline.json'));
     const tl = JSON.parse(fs.readFileSync(file, 'utf8'));
-    const ts = [];
-    const walk = (v, key) => {
-      if (key === 'fps' || key === 'duration') return;
-      if (typeof v === 'number') ts.push(v + 0.3);
-      else if (Array.isArray(v)) v.forEach((x) => walk(x));
-      else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => walk(x, k));
-    };
-    walk(tl);
-    return [0, ...ts];
+    return reviewTimes(tl);
   }
   if (arg.startsWith('every:')) {
     const step = Number(arg.slice(6));
@@ -128,7 +126,7 @@ const stillTimes = (arg) => {
     for (let t = Number(opt('from', 0)); t <= end + 1e-6; t += step) ts.push(t);
     return ts;
   }
-  return arg.split(',').map(Number);
+  const times=arg.split(',').map(Number);if(times.some(t=>!Number.isFinite(t)||t<0))throw new Error('invalid --stills timestamp');return times;
 };
 
 const stills = opt('stills');
@@ -153,7 +151,8 @@ if (stills) {
     await page.evaluate(() => document.getElementById('__t')?.remove());
   }
   await browser.close();
-  const cols = Math.min(ts.length, Number(opt('cols', 3)));
+  const requestedCols=Number(opt('cols',3));if(!Number.isInteger(requestedCols)||requestedCols<=0)throw new Error('--cols must be a positive integer');
+  const cols = Math.min(ts.length, requestedCols);
   const sheet = out.endsWith('.png') ? out : out.replace(/\.mp4$/, '') + '-sheet.png';
   const tw = Math.round(W * 0.4);
   const th = Math.round(H * 0.4);
@@ -182,10 +181,11 @@ if (!Number.isFinite(fps) || fps <= 0 || !Number.isFinite(from) || from < 0 || t
 const frames = Math.round((to - from) * fps);
 const silent = music ? out.replace(/\.mp4$/, '-silent.mp4') : out;
 
+const encoded=silent.replace(/\.mp4$/i,'')+'.partial.mp4';
 const ff = spawn(
   FFMPEG,
   ['-loglevel', 'error', '-y', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opt('crf', 16)), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', silent],
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opt('crf', 16)), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', encoded],
   {stdio: ['pipe', 'inherit', 'inherit']},
 );
 // Observe errors immediately, including ENOENT and broken encoder stdin.
@@ -196,19 +196,24 @@ const ffDone = new Promise((resolve) => {
   ff.on('close', resolve);
 });
 const t0 = Date.now();
+try {
 for (let i = 0; i < frames; i++) {
   if (ffError) throw ffError;
   await draw(from + i / fps);
   const buf = await page.screenshot({type: 'jpeg', quality: 97});
+  checkPage();
   if (!ff.stdin.write(buf)) await Promise.race([
     new Promise((r) => ff.stdin.once('drain', r)),
     ffDone.then((code) => { throw ffError || new Error('encoder closed during capture: ' + code); }),
   ]);
   if (i % fps === 0) process.stdout.write(`\r${i}/${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 }
+}
+catch(error){ff.stdin.destroy();ff.kill();await ffDone;fs.rmSync(encoded,{force:true});throw error;}
 ff.stdin.end();
 const ffCode = await ffDone;
-if (ffError || ffCode !== 0) throw ffError || new Error('ffmpeg encode failed: ' + ffCode);
+if (ffError || ffCode !== 0){fs.rmSync(encoded,{force:true});throw ffError || new Error('ffmpeg encode failed: ' + ffCode);}
+checkPage();fs.renameSync(encoded,silent);
 await browser.close();
 console.log(`\r${frames}/${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 

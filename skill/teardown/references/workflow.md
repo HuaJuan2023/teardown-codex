@@ -58,7 +58,7 @@ Three.js / ANGLE pitfalls:
 
 ## Timeline ownership
 
-For new machines author times once in timeline JSON and derive JS script and score from it; separate dimensions, amplitudes and IDs from timestamps. Inherited review walkers interpret every numeric field other than duration/fps as seconds, so do not put RPM, cylinder IDs or dimensions there. Example review timelines now list SCRIPT beats, but inherited film and score implementations still duplicate event constants. When changing these update/check all copies or migrate to a shared event schema. Do not claim unchanged example scores have perfect mechanical synchronization.
+Author times once in timeline JSON and derive JS script and score cues from it; the three bundled examples use shared events. Keep dimensions, amplitudes and IDs as named data rather than event timestamps. Use the event-aware review walker; a legacy recursive numeric walker can misread RPM or dimensions as seconds. Shared cue timing does not validate sound formulas or presumed contact phases: check changed motion parameters against the score and label approximations.
 
 ## Packaging and publication
 

@@ -1,0 +1,488 @@
+{
+  "name": "CERATO / mechanical horned frog",
+  "units": "mm",
+  "reference": [
+    {
+      "url": "https://sib.gob.ar/especies/ceratophrys-ornata",
+      "supports": "broad head, short body, horned eyelids; not mechanical dimensions"
+    },
+    {
+      "path": "references/biological-envelope.json",
+      "supports": "previous biological envelope study"
+    }
+  ],
+  "assumptions": [
+    "Original miniature robot concept; no sourced actuator SKU or manufacturing CAD.",
+    "Joint commands and root trajectory are prescribed; spring settings do not predict jump height.",
+    "Gear profiles are approximate; no tooth-contact dynamics or full-solid interference test.",
+    "Ankle and toe posture are coupled teaching outputs.",
+    "Spring couplers are telescopic; no latch, preload or force closure certification.",
+    "R2 optical gimbal servos and auxiliary fan are original package illustrations, not sourced actuator products.",
+    "Walking uses prescribed diagonal contact phases with exact two-link IK; cinematic entry and stop transitions do not solve contact dynamics.",
+    "Cover hinges and exploded offsets are display mechanisms; no complete solid swept-volume collision certification."
+  ],
+  "actuators": [
+    {
+      "id": "LH-yaw",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "LH-hip",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "LH-knee",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "LF-yaw",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "LF-hip",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "LF-knee",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RH-yaw",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RH-hip",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RH-knee",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RF-yaw",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RF-hip",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "RF-knee",
+      "input": "IK output angle * planetary ratio 5"
+    },
+    {
+      "id": "jaw",
+      "input": "shared mode cursor; output * ratio 5"
+    },
+    {
+      "id": "capture",
+      "input": "shared mode cursor; output * ratio 5"
+    },
+    {
+      "id": "bellows",
+      "input": "shared mode cursor; output * ratio 5"
+    },
+    {
+      "id": "optical-L-yaw",
+      "input": "prescribed slow tracking angle from shared motion clock"
+    },
+    {
+      "id": "optical-L-pitch",
+      "input": "prescribed slow tracking angle from shared motion clock"
+    },
+    {
+      "id": "optical-R-yaw",
+      "input": "prescribed slow tracking angle from shared motion clock"
+    },
+    {
+      "id": "optical-R-pitch",
+      "input": "prescribed slow tracking angle from shared motion clock"
+    },
+    {
+      "id": "ventilation",
+      "input": "motion clock * 1.6 revolutions/second"
+    }
+  ],
+  "joints": [
+    {
+      "id": "LH-yaw",
+      "parent": "chassis",
+      "child": "LH-gimbal",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LH-yaw"
+      }
+    },
+    {
+      "id": "LH-hip",
+      "parent": "LH-yaw",
+      "child": "LH-thigh",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LH-hip"
+      }
+    },
+    {
+      "id": "LH-knee",
+      "parent": "LH-thigh",
+      "child": "LH-shank",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LH-knee"
+      }
+    },
+    {
+      "id": "LH-ankle",
+      "parent": "LH-shank",
+      "child": "LH-foot",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "coupling",
+        "equation": "ankle to foot follows prescribed foot plane; passive teaching coupling"
+      }
+    },
+    {
+      "id": "LF-yaw",
+      "parent": "chassis",
+      "child": "LF-gimbal",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LF-yaw"
+      }
+    },
+    {
+      "id": "LF-hip",
+      "parent": "LF-yaw",
+      "child": "LF-thigh",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LF-hip"
+      }
+    },
+    {
+      "id": "LF-knee",
+      "parent": "LF-thigh",
+      "child": "LF-shank",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "LF-knee"
+      }
+    },
+    {
+      "id": "LF-ankle",
+      "parent": "LF-shank",
+      "child": "LF-foot",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "coupling",
+        "equation": "ankle to foot follows prescribed foot plane; passive teaching coupling"
+      }
+    },
+    {
+      "id": "RH-yaw",
+      "parent": "chassis",
+      "child": "RH-gimbal",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RH-yaw"
+      }
+    },
+    {
+      "id": "RH-hip",
+      "parent": "RH-yaw",
+      "child": "RH-thigh",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RH-hip"
+      }
+    },
+    {
+      "id": "RH-knee",
+      "parent": "RH-thigh",
+      "child": "RH-shank",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RH-knee"
+      }
+    },
+    {
+      "id": "RH-ankle",
+      "parent": "RH-shank",
+      "child": "RH-foot",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "coupling",
+        "equation": "ankle to foot follows prescribed foot plane; passive teaching coupling"
+      }
+    },
+    {
+      "id": "RF-yaw",
+      "parent": "chassis",
+      "child": "RF-gimbal",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RF-yaw"
+      }
+    },
+    {
+      "id": "RF-hip",
+      "parent": "RF-yaw",
+      "child": "RF-thigh",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RF-hip"
+      }
+    },
+    {
+      "id": "RF-knee",
+      "parent": "RF-thigh",
+      "child": "RF-shank",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "RF-knee"
+      }
+    },
+    {
+      "id": "RF-ankle",
+      "parent": "RF-shank",
+      "child": "RF-foot",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "coupling",
+        "equation": "ankle to foot follows prescribed foot plane; passive teaching coupling"
+      }
+    },
+    {
+      "id": "jaw",
+      "parent": "head",
+      "child": "mandible",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "jaw"
+      }
+    },
+    {
+      "id": "capture",
+      "parent": "mandible",
+      "child": "opposed-lead-screw",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "capture"
+      }
+    },
+    {
+      "id": "bellows",
+      "parent": "chassis",
+      "child": "eccentric-crank",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "bellows"
+      }
+    },
+    {
+      "id": "optical-L-yaw",
+      "parent": "head",
+      "child": "L-optical-yaw",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "optical-L-yaw"
+      }
+    },
+    {
+      "id": "optical-L-pitch",
+      "parent": "L-optical-yaw",
+      "child": "L-optical-pitch",
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "optical-L-pitch"
+      }
+    },
+    {
+      "id": "optical-R-yaw",
+      "parent": "head",
+      "child": "R-optical-yaw",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "optical-R-yaw"
+      }
+    },
+    {
+      "id": "optical-R-pitch",
+      "parent": "R-optical-yaw",
+      "child": "R-optical-pitch",
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "optical-R-pitch"
+      }
+    },
+    {
+      "id": "ventilation",
+      "parent": "chassis",
+      "child": "fan-rotor",
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "axisFrame": "joint-local",
+      "drive": {
+        "type": "actuator",
+        "id": "ventilation"
+      }
+    }
+  ],
+  "readouts": [
+    {
+      "id": "springEnergy",
+      "unit": "mJ",
+      "source": "derived",
+      "equation": "0.5 * 0.8 N/mm * stroke_mm^2"
+    },
+    {
+      "id": "scissorReach",
+      "unit": "mm",
+      "source": "derived",
+      "equation": "4*sqrt(20^2-(2*w)^2)"
+    },
+    {
+      "id": "bellowsStroke",
+      "unit": "mm",
+      "source": "derived",
+      "equation": "sliderY-6; crank radius 2, connecting rod 14, lateral offset 10"
+    }
+  ]
+}

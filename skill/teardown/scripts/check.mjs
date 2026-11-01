@@ -1,5 +1,6 @@
 // Dependency-free packaging and numeric checks; does not prove visual correctness.
 import assert from 'node:assert/strict';
+import {validateTimeline} from '../sims/kit/timeline.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -40,14 +41,20 @@ for (const f of files.filter(f => f.endsWith('.py'))) {
   const timeline = source.match(/^TIMELINE = "([^"]+)"/m)?.[1];
   if (timeline) assert(fs.existsSync(path.resolve(path.dirname(f), timeline)));
 }
+const examples=['v8','cessna','strandbeest'];
+const present=examples.filter(n=>fs.existsSync(path.join(root,'sims',n+'-shared')));
+console.log(`PASS: frontmatter/references, ${syntax} JS syntax checks, ${imports} relative imports.`);
+if(present.length===0){
+ console.log('SKIP: upstream example timelines and numerical machine tests; this distribution intentionally omits all three upstream examples.');
+}else{
+ assert.equal(present.length,examples.length,'Incomplete upstream example set');
 for (const name of ['v8', 'cessna', 'strandbeest']) {
   const film = read(`sims/${name}-shared/film.js`);
-  const block = film.match(/export const SCRIPT = \[([\s\S]*?)\n\];/)[1];
-  const times = [...block.matchAll(/\bt:\s*([\d.]+)/g)].map(m => Number(m[1]));
-  const tl = JSON.parse(read(`sims/${name}-film/timeline.json`));
-  assert.deepEqual(tl.beats, times, `${name}: review beats differ from SCRIPT`);
-  assert.equal(tl.duration, Number(film.match(/export const DURATION = ([\d.]+);/)[1]));
-  assert(times.every(t => t >= 0 && t < tl.duration));
+  const tl=JSON.parse(read(`sims/${name}-film/timeline.json`));
+  const events=validateTimeline(tl);
+  assert(events.length>0);
+  assert(film.includes(`../${name}-film/timeline.json`), 'film must import shared timeline');
+  assert(film.includes('timeline.duration'));
 }
 // Pure model modules have no imports: loading a data URL avoids requiring npm.
 const model = async p => import('data:text/javascript;base64,' + Buffer.from(read(p)).toString('base64'));
@@ -94,4 +101,5 @@ assert(roundedRackError < 0.062);
 console.log(`PASS: frontmatter/references, ${syntax} JS syntax checks, ${imports} relative imports, 3 review timelines.`);
 console.log(`PASS: 721 angles x 8 pistons and 2 leg solvers; max rod error ${maxRod} mm, max link error ${maxLink} units.`);
 console.log(`PASS: flight endpoints and 2002 stroke samples; rack rounding discrepancy ${roundedRackError.toFixed(6)} mm.`);
+}
 console.log('NOT CHECKED: Python execution, npm build, WebGL images, input behavior, GPU performance or audio/video rendering.');

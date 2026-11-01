@@ -11,6 +11,7 @@ import {execFileSync, spawnSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {FFMPEG, FFPROBE} from './paths.mjs';
+import {eventTimes} from './sims/kit/timeline.js';
 
 const argv = process.argv.slice(2);
 const ti = argv.indexOf('--timeline');
@@ -21,7 +22,9 @@ if (!argv[0] || !fs.existsSync(argv[0])) {
 }
 const input = path.resolve(argv[0]);
 
-const TARGET_LUFS = -14;
+const li=argv.indexOf('--lufs');
+const TARGET_LUFS=li<0?-14:Number(argv[li+1]);
+if(!Number.isFinite(TARGET_LUFS))throw new Error('--lufs must be numeric');
 const MAX_TRUE_PEAK = -1;
 const W = 1800;
 const H = 280;
@@ -29,14 +32,7 @@ const H = 280;
 const probed = Number(execFileSync(FFPROBE, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', input]).toString());
 const tl = timelinePath ? JSON.parse(fs.readFileSync(timelinePath, 'utf8')) : {duration: probed};
 tl.duration ??= probed;
-const beats = [];
-const walk = (v, key) => {
-  if (key === 'fps' || key === 'duration') return;
-  if (typeof v === 'number') beats.push(v);
-  else if (Array.isArray(v)) v.forEach((x) => walk(x));
-  else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => walk(x, k));
-};
-walk(tl);
+const beats = eventTimes(tl);
 
 const marks = [...new Set(beats)]
   .map((t) => `drawbox=x=${Math.round((t / tl.duration) * W)}:y=0:w=2:h=ih:color=0xD97757@0.9:t=fill`)

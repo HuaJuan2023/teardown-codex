@@ -1,0 +1,17 @@
+{
+ "taxon":"Ceratophrys ornata","stage":"adult male","units":"mm",
+ "designScope":"Original biological explainer, estimated 90 mm-class form; no measured specimen reconstruction. Hindlimb energy analogy borrows Rana pipiens evidence and is declared separately.",
+ "references":[
+  {"id":"sib","url":"https://sib.gob.ar/especies/ceratophrys-ornata","supports":"Species description: robust globose body, very broad mouth and patterned integument; not numerical proportions."},
+  {"id":"photo","url":"https://exo-terra.com/explore/care-guides/frogs-toads/ceratophrys-ornata/","supports":"Identifiable specimen photographs for estimated appearance, not kinematic or force data. Photo rights remain with source; not bundled."},
+  {"id":"amnh","url":"https://doi.org/10.1206/0003-0090.470.1.1","supports":"Comparative vocal-sac anatomy; simplified bilobed dark gular region, not an individual CT reconstruction."},
+  {"id":"tongue","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC5381498/","supports":"Horned frog tongue adhesion; no measured trajectory is reproduced."}
+ ],
+ "landmarks":{"snout":[0,38,22],"vent":[0,-44,20],"mouthL":[-37,8,23],"mouthR":[37,8,23],"bodyL":[-30,-15,25],"bodyR":[30,-15,25],"eyeL":[-23,17,44],"eyeR":[23,17,44],"hipL":[-22,-21,23],"hipR":[22,-21,23]},
+ "ratios":[
+  {"id":"mouthWidthToSVL","numerator":["mouthL","mouthR"],"denominator":["snout","vent"],"range":[0.82,0.98],"basis":"Design acceptance for broad-mouth silhouette; range estimated, not a published measurement.","referenceId":"sib"},
+  {"id":"headToBodyWidth","numerator":["mouthL","mouthR"],"denominator":["bodyL","bodyR"],"range":[1.1,1.4],"basis":"Original design constraint from visual references, not specimen calipers.","referenceId":"photo"},
+  {"id":"eyeSeparationToMouth","numerator":["eyeL","eyeR"],"denominator":["mouthL","mouthR"],"range":[0.55,0.7],"basis":"Original landmark estimate.","referenceId":"photo"}
+ ],
+ "features":[{"id":"broad-low-mouth-and-short-trunk","views":["front","side","top"],"referenceId":"sib"},{"id":"moderate-supraorbital-projections","views":["front","side"],"referenceId":"photo"},{"id":"bulky-folded-hindlimbs","views":["side","top"],"referenceId":"photo"},{"id":"dark-bilobed-gular-region","views":["front","hero"],"referenceId":"amnh"}]
+}

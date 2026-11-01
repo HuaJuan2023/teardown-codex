@@ -6,6 +6,34 @@
 
 ---
 
+## 当前版本：1.4.1
+
+本次在原有移植与机械蚁演示基础上更新 skill、通用工具和使用说明。下文的原项目介绍、安装步骤、机械蚁示例、限制说明和上游致谢保留。
+
+### 1.4.1 更新说明
+
+- **零件设计与拆解**：完整传动总成、实体件与绘制细节分开登记；检查成形板件、孔槽、轴承座、连接端和开盖后的实际可见性。爆炸偏移与装配运动分开计算，支持连续回装。
+- **生物学外形与动作**：加入形态参考、正交轮廓和关节封装检查；明确各附肢的独立驱动、耦合或固定关系，避免关节破坏生物轮廓。区分主体动作、内部传动与辅助动作。
+- **动态展示与验证**：补充分总成的连续开合、同步局部窗口、连续变形表面、暂停冻结、相机接管和非顺序寻帧检查。方法来自本地机械角蛙等示例的实际迭代。
+- **工具链**：补充环境诊断、机构与形态声明校验、通用浏览器 QA、导览接管和时间轴辅助工具；构建时统一 Three.js 实例，录像遇到页面异常会中止。
+- **成片交付**：补充关键动作序列、同机位对照、编码后的尺寸/帧数/音画时长、响度与产物哈希检查。录像和程序化说明音轨已在本地机械角蛙流程中验证；这不表示原机械蚁示例已新增影片，也不证明真实手机或集显性能。
+
+技能版本见 [package.json](./skill/teardown/package.json)，完整规则见 [SKILL.md](./skill/teardown/SKILL.md)。1.1–1.4 的方法和工具改进也随本次同步；参见 [runtime 说明](./skill/teardown/README.md)。
+
+### 包含范围与验证
+
+保留原有约定：本仓不打包 V8 / Cessna / Strandbeest 三台上游示例；机械蚁演示与源码仍位于 `examples/ant/`。模板脚手架需要包含这三台源码的完整 runtime；本仓可直接构建机械蚁或其他工作区自定义入口。运行 `check.mjs` 时会明确报告上游示例的数值检查未运行。
+
+```powershell
+node skill/teardown/scripts/core-test.mjs
+node skill/teardown/scripts/check.mjs
+node skill/teardown/scripts/doctor.mjs --mode page
+```
+
+## 最新项目复现：机械角蛙 R3
+
+最新的 [机械角蛙 R3 源码与完整复现步骤](./examples/mecha-frog/README.md) 已加入 examples/mecha-frog/。在安装依赖后，从该目录运行 build.ps1 可构建互动页与影片入口，再按说明进行模型、交互、寻帧和 33 秒成片检查。生成产物保存在各项目的 teardown-out/，不打包进源码。原机械蚁示例继续保留。
+
 ## 简介
 
 [elvarofficial/teardown](https://github.com/elvarofficial/teardown) 是给 Claude Code 用的 Agent Skill：用白话说「给我做一台能拆开的某某机器」，它吐出一页离线 HTML。机器在中间跑，四周面板读的是同一套真数，一点就能打开正在干活的零件，没人碰的时候页面自己导览。示例里有 V8、赛斯纳起落架、还有沙滩上的 Strandbeest——沙色工程纸底，连杆就是画面。它又站在 [whaleyxbt/claude-motion](https://github.com/whaleyxbt/claude-motion) 那套 motion 工具上。作者有一篇 [Article](https://x.com/elvar_official/status/2116174609355571402) 把「任意机械 → 可拆模拟器」讲得很清楚。

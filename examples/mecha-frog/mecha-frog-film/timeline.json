@@ -1,0 +1,506 @@
+{
+  "duration": 33,
+  "fps": 60,
+  "events": [
+    {
+      "id": "wake",
+      "at": 0,
+      "until": 3,
+      "mode": "walk",
+      "layer": "exterior",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        0,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          0.55,
+          0.72
+        ],
+        "elevation": [
+          0.64,
+          0.67
+        ],
+        "half": [
+          52,
+          50
+        ],
+        "target": [
+          [
+            0,
+            -2,
+            26
+          ],
+          [
+            0,
+            0,
+            27
+          ]
+        ]
+      },
+      "label": "01 / 潜行 · 交替支撑"
+    },
+    {
+      "id": "capture",
+      "at": 3,
+      "until": 7,
+      "mode": "hunt",
+      "layer": "section",
+      "from": 0,
+      "to": 0.53,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "hunt",
+      "open": [
+        0,
+        1
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          0.72,
+          0.45
+        ],
+        "elevation": [
+          0.67,
+          0.55
+        ],
+        "half": [
+          50,
+          46
+        ],
+        "target": [
+          [
+            0,
+            0,
+            27
+          ],
+          [
+            0,
+            18,
+            26
+          ]
+        ]
+      },
+      "label": "02 / 头颌开盖 · 剪叉前送"
+    },
+    {
+      "id": "retract",
+      "at": 7,
+      "until": 9,
+      "mode": "hunt",
+      "layer": "section",
+      "from": 0.53,
+      "to": 1,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "hunt",
+      "open": [
+        1,
+        1
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          0.45,
+          0.62
+        ],
+        "elevation": [
+          0.55,
+          0.65
+        ],
+        "half": [
+          46,
+          49
+        ],
+        "target": [
+          [
+            0,
+            18,
+            26
+          ],
+          [
+            0,
+            4,
+            27
+          ]
+        ]
+      },
+      "label": "03 / 夹持端闭合 · 回收"
+    },
+    {
+      "id": "load",
+      "at": 9,
+      "until": 12,
+      "mode": "jump",
+      "layer": "section",
+      "from": 0,
+      "to": 0.25,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "jump",
+      "open": [
+        0,
+        1
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          0.62,
+          1
+        ],
+        "elevation": [
+          0.65,
+          0.52
+        ],
+        "half": [
+          49,
+          49
+        ],
+        "target": [
+          [
+            0,
+            4,
+            27
+          ],
+          [
+            0,
+            -8,
+            27
+          ]
+        ]
+      },
+      "label": "04 / 前肢开盖 · 后肢加载"
+    },
+    {
+      "id": "core",
+      "at": 12,
+      "until": 15,
+      "mode": "call",
+      "layer": "section",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "call",
+      "open": [
+        0,
+        1
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          1,
+          0.32
+        ],
+        "elevation": [
+          0.52,
+          0.15
+        ],
+        "half": [
+          49,
+          44
+        ],
+        "target": [
+          [
+            0,
+            -8,
+            27
+          ],
+          [
+            0,
+            14,
+            20
+          ]
+        ]
+      },
+      "label": "05 / 喉部检修 · 曲柄驱动风箱"
+    },
+    {
+      "id": "explode",
+      "at": 15,
+      "until": 19,
+      "mode": "rest",
+      "layer": "exploded",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        0,
+        1
+      ],
+      "camera": {
+        "azimuth": [
+          0.32,
+          4.9
+        ],
+        "elevation": [
+          0.15,
+          0.75
+        ],
+        "half": [
+          44,
+          69
+        ],
+        "target": [
+          [
+            0,
+            14,
+            20
+          ],
+          [
+            0,
+            -8,
+            31
+          ]
+        ]
+      },
+      "label": "06 / 装配分离 · 旋转读图"
+    },
+    {
+      "id": "assemble",
+      "at": 19,
+      "until": 22,
+      "mode": "rest",
+      "layer": "exploded",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        1,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          4.9,
+          6.9
+        ],
+        "elevation": [
+          0.75,
+          0.64
+        ],
+        "half": [
+          69,
+          51
+        ],
+        "target": [
+          [
+            0,
+            -8,
+            31
+          ],
+          [
+            0,
+            0,
+            27
+          ]
+        ]
+      },
+      "label": "07 / 传动归位 · 外壳回装"
+    },
+    {
+      "id": "advance",
+      "at": 22,
+      "until": 24,
+      "mode": "walk",
+      "layer": "exterior",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        14,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          6.9,
+          6.9
+        ],
+        "elevation": [
+          0.64,
+          0.64
+        ],
+        "half": [
+          51,
+          51
+        ],
+        "target": [
+          [
+            0,
+            0,
+            27
+          ],
+          [
+            0,
+            0,
+            27
+          ]
+        ]
+      },
+      "label": "08 / 再次前进 · 机构复位"
+    },
+    {
+      "id": "leap",
+      "at": 24,
+      "until": 30,
+      "mode": "jump",
+      "layer": "exterior",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        28,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          6.9,
+          6.65
+        ],
+        "elevation": [
+          0.64,
+          0.58
+        ],
+        "half": [
+          51,
+          59
+        ],
+        "target": [
+          [
+            0,
+            0,
+            27
+          ],
+          [
+            0,
+            0,
+            26
+          ]
+        ]
+      },
+      "label": "09 / 蹲伏 · 释放 · 腾空 · 缓冲"
+    },
+    {
+      "id": "settle",
+      "at": 30,
+      "until": 33,
+      "mode": "rest",
+      "layer": "exterior",
+      "from": 0,
+      "to": 1,
+      "rootOffset": [
+        0,
+        97.2,
+        0
+      ],
+      "openTopic": "all",
+      "open": [
+        0,
+        0
+      ],
+      "explosion": [
+        0,
+        0
+      ],
+      "camera": {
+        "azimuth": [
+          6.65,
+          6.8
+        ],
+        "elevation": [
+          0.58,
+          0.6
+        ],
+        "half": [
+          59,
+          48
+        ],
+        "target": [
+          [
+            0,
+            0,
+            26
+          ],
+          [
+            0,
+            3,
+            28
+          ]
+        ]
+      },
+      "label": "CERATO R3 / 层层开启的机械生命"
+    }
+  ]
+}

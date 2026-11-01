@@ -13,6 +13,7 @@ import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {FFMPEG, FFPROBE} from './paths.mjs';
+import {eventTimes} from './sims/kit/timeline.js';
 
 const argv = process.argv.slice(2);
 const opt = (name, fallback) => {
@@ -49,15 +50,7 @@ const beats = () => {
     process.exit(1);
   }
   const tl = JSON.parse(fs.readFileSync(timelinePath, 'utf8'));
-  const out = [];
-  const walk = (v, key) => {
-    if (key === 'fps' || key === 'duration') return;
-    if (typeof v === 'number') out.push(v);
-    else if (Array.isArray(v)) v.forEach((x) => walk(x));
-    else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => walk(x, k));
-  };
-  walk(tl);
-  return out.map((t) => t + offset);
+  return [0,...eventTimes(tl).map((t) => t + offset)];
 };
 
 let times;
@@ -65,6 +58,7 @@ if (argv.length) {
   times = argv.map(Number);
   name ??= 'picked';
 } else if (every) {
+  if(!Number.isFinite(Number(every))||Number(every)<=0)throw new Error('--every must be positive');
   const end = to === null ? duration : Number(to);
   times = [];
   for (let t = from; t <= end + 1e-6; t += Number(every)) times.push(Number(t.toFixed(3)));
@@ -82,7 +76,10 @@ times = [...new Set(times.map((t) => Math.min(Math.max(t, 0), duration - eps).to
 
 const base = video.replace(/\.[^.]+$/, '') + '_sheets';
 const dir = path.join(base, name);
-fs.rmSync(dir, {recursive: true, force: true});
+if(!/^[a-zA-Z0-9_.-]+$/.test(name)||name==='.'||name==='..')throw new Error('unsafe sheet name');
+const resolvedBase=path.resolve(base),resolvedDir=path.resolve(dir);
+if(!resolvedDir.startsWith(resolvedBase+path.sep))throw new Error('sheet directory escapes video output');
+fs.rmSync(resolvedDir, {recursive: true, force: true});
 fs.mkdirSync(dir, {recursive: true});
 
 const ffmpeg = (args) => execFileSync(FFMPEG, ['-loglevel', 'error', '-y', ...args], {stdio: 'pipe'});

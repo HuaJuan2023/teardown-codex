@@ -16,10 +16,18 @@
 // page the same way (decoders a loader fetches at runtime).
 import fs from 'node:fs';
 import path from 'node:path';
+import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {DEPS, DIST, fromDeps} from '../paths.mjs';
 
 const esbuild = fromDeps('esbuild');
+const runtimeRequire=createRequire(path.join(DEPS,'teardown-resolve.cjs'));
+// External projects may have their own Three installation. Keep kit helpers,
+// addon classes and scene geometry on one runtime instance.
+const threePlugin={name:'single-three-runtime',setup(b){
+  b.onResolve({filter:/^three(?:\/|$)/},args=>({path:args.path==='three'
+    ?path.join(DEPS,'three/build/three.module.js'):runtimeRequire.resolve(args.path)}));
+}};
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 fs.mkdirSync(DIST, {recursive: true});
@@ -95,7 +103,7 @@ for (const arg of names) {
       ]
     : [];
   const res = await esbuild.build({
-    plugins: [kitPlugin, ...plugins],
+    plugins: [threePlugin, kitPlugin, ...plugins],
     entryPoints: [path.join(dir, 'main.js')],
     bundle: true,
     nodePaths: [DEPS],
